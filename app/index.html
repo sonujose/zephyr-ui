@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<% var config=htmlWebpackPlugin || SSRData %>
+  <!--[if lt IE 7 ]> <html lang="en" class="ie6" <% if(config.files.manifest) { %> manifest="<%= config.files.manifest %>"<% } %>> <![endif]-->
+  <!--[if IE 7 ]>    <html lang="en" class="ie7" <% if(config.files.manifest) { %> manifest="<%= config.files.manifest %>"<% } %>> <![endif]-->
+  <!--[if IE 8 ]>    <html lang="en" class="ie8" <% if(config.files.manifest) { %> manifest="<%= config.files.manifest %>"<% } %>> <![endif]-->
+  <!--[if IE 9 ]>    <html lang="en" class="ie9" <% if(config.files.manifest) { %> manifest="<%= config.files.manifest %>"<% } %>> <![endif]-->
+  <!--[if (gt IE 9)|!(IE)]><!-->
+  <html lang="en" class="" <% if(config.files.manifest) { %> manifest="<%= config.files.manifest %>"<% } %>>
+      <!--<![endif]-->
+
+      <head>
+        <meta charset="utf-8">
+        <title> zephyr | Cloud-Native kubernetes deployment platform</title>
+
+        <% if (config.files.favicon) { %>
+          <link rel="shortcut icon" href="<%= config.files.favicon%>">
+          <% } %>
+            <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0, minimal-ui">
+
+            <% for (var css in config.files.css) { %>
+              <link href="<%= config.files.css[css] %>" rel="preload" as="style">
+              <link href="<%= config.files.css[css] %>" rel="stylesheet">
+              <% } %>
+
+                <% if (config.options.chunks) { %>
+                  <%= config.options.chunks.css %>
+                    <% } %>
+
+                      <!-- Loader Style -->
+                      <style>
+                        @keyframes spin {
+                          100% {
+                            transform: rotate(360deg)
+                          }
+                        }
+                        .blue-color {
+                            color:blue;
+                        }
+                        
+                        .green-color {
+                            color:green;
+                        }
+                        
+                        .teal-color {
+                            color:teal;
+                        }
+                        
+                        .yellow-color {
+                        color:yellow;
+                        }
+                        
+                        .red-color {
+                            color:red;
+                        }
+
+                        .initial-loader-wrap {
+                          top: 0;
+                          left: 0;
+                          width: 100vw;
+                          height: 100vh;
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                          font-family: -apple-system, "Helvetica Neue", Helvetica, "Segoe UI", Arial, sans-serif;
+                          font-size: 12px;
+                          position: fixed;
+                          z-index: 99999;
+                          background-color: white;
+                          transition: opacity 200ms cubic-bezier(0.215, 0.610, 0.355, 1.000);
+                        }
+
+                        .loaded .initial-loader-wrap {
+                          opacity: 0;
+                        }
+
+                        .initial-loader {
+                          min-width: 240px;
+                          color: #212529;
+                          line-height: 1.5;
+                        }
+
+                        .initial-loader__row {
+                          display: flex;
+                          justify-content: space-between;
+                          align-items: center;
+                          padding: 0.5rem;
+                        }
+
+                        .initial-loader__row+.initial-loader__row {
+                          border-top: 1px solid #e2e2e2;
+                        }
+
+                        .initial-loader h1 {
+                          margin: 0;
+                          color: #0D7BFF;
+                          font-size: 30px;
+                          font-weight: 600;
+                          line-height: 1.2;
+                        }
+
+                        .initial-loader svg#loader-circle {
+                          transform-origin: 50% 50%;
+                          animation: spin .5s linear infinite;
+                        }
+                      </style>
+      </head>
+
+      <body>
+        <!-- START Loader -->
+        <div class="initial-loader-wrap">
+          <div class="initial-loader">
+            <div class="initial-loader__row">
+              <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="103px" height="40px" viewBox="0 0 103 40" enable-background="new 0 0 103 40" xml:space="preserve">  <image id="image0" width="103" height="40" x="0" y="0"
+                href="data:image/png;base64,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
+            OjAwRjLOhgAAAABJRU5ErkJggg==" />
+            </svg>
+
+              <svg version="1.1" id="loader-circle" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30px" height="30px"
+                viewBox="0 0 40 40" enable-background="new 0 0 40 40" xml:space="preserve">
+                <g>
+                  <path fill="#e7e7e7"
+                    d="M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z" />
+                  <path fill="#1EB7FF"
+                    d="M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0C22.32,8.481,24.301,9.057,26.013,10.047z">
+                  </path>
+                </g>
+              </svg>
+            </div>
+            <div class="initial-loader__row">
+              kube world is waiting...
+            </div>
+          </div>
+        </div>
+
+        <script>
+          (function () {
+            var bodyElement = document.querySelector('body');
+            bodyElement.classList.add('loading');
+
+            document.addEventListener('readystatechange', function () {
+              if (document.readyState === 'complete') {
+                var bodyElement = document.querySelector('body');
+                var loaderElement = document.querySelector('.initial-loader-wrap');
+                bodyElement.classList.add('loaded');
+                setTimeout(function () {
+                  bodyElement.removeChild(loaderElement);
+                  bodyElement.classList.remove('loading', 'loaded');
+                }, 200);
+              }
+            });
+          })();
+        </script>
+        <!-- END Loader -->
+
+        <div id="root">
+          <%= config.innerHtml || '' %>
+        </div>
+
+        <% for (var chunk in config.files.chunks) { %>
+          <script src="<%= config.files.chunks[chunk].entry %>" defer></script>
+          <% } %>
+
+            <% if (config.options.devServer) { %>
+              <script src="<%= config.options.devServer%>/webpack-dev-server.js"></script>
+              <% } %>
+      </body>
+
+  </html>

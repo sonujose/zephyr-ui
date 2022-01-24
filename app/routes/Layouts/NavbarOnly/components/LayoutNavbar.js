@@ -2,18 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
     Button,
-    DropdownToggle,
     Nav,
     NavItem,
     NavLink,
-    Avatar,
-    AvatarAddOn,
     Navbar,
     NavbarToggler,
     UncontrolledDropdown,
     ThemeConsumer,
 } from './../../../../components';
-import { randomAvatar } from './../../../../utilities';
 
 import { NavbarActivityFeed } from
     './../../../../layout/components/NavbarActivityFeed';
@@ -53,24 +49,6 @@ export const LayoutNavbar = () => (
                 <NavbarActivityFeed />
                 { /* START Navbar: Dropdown */ }
                 <UncontrolledDropdown nav inNavbar>
-                    <DropdownToggle nav>
-                        <Avatar.Image
-                            size="sm"
-                            src={ randomAvatar() }
-                            addOns={[
-                                <AvatarAddOn.Icon 
-                                    className="fa fa-circle"
-                                    color="white"
-                                    key="avatar-icon-bg"
-                                />,
-                                <AvatarAddOn.Icon 
-                                    className="fa fa-circle"
-                                    color="danger"
-                                    key="avatar-icon-fg"
-                                />
-                            ]}
-                        /> 
-                    </DropdownToggle>
                     <DropdownProfile  
                         right  
                     />

@@ -87,6 +87,8 @@
     "react-responsive": "^7.0.0",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
+    "react-select": "^5.2.2",
+    "react-spinners": "^0.11.0",
     "react-text-mask": "^5.4.3",
     "react-toastify": "^5.2.1",
     "react-toggle": "^4.0.2",

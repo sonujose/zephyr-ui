@@ -3,57 +3,75 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import moment from 'moment';
 import _ from 'lodash';
-import faker from 'faker/locale/en_US';
 import { api } from './../../../../api/fetcher'
 import { UncontrolledTooltip } from './../../../../components'
+import PropagateLoader from "react-spinners/PropagateLoader";
+import Select from 'react-select'
 
 import {
-    Avatar,
     Badge,
     Button,
     ButtonGroup,
     Row,
     Col
 } from './../../../../components';
-import { CustomExportCSV } from './CustomExportButton';
 import { CustomSearch } from './CustomSearch';
-import { randomArray, randomAvatar } from './../../../../utilities';
-
-
-
-
 
 export default function ServiceManager() {
     const [services, setServices] = useState([])
+    const [spinnerColor, setSpinnerColor] = useState("#1eb7ff")
+    const [namespaces, setNamespaces] = useState([])
+    const [loading, setLoading] = useState(false);
+    const [options, setOptions] = useState([]);
 
     useEffect(() => {
-        api.get("/api/v1/services/am-dev").then((response) => {
-            setServices(response.data.data)
+
+        // List all services in the namespace
+        getServicesData("am-dev");
+
+        // Get List of all namespaces
+        api.get("/api/v1/namespaces").then((response) => {
+            let arr = response.data.data;
+            let option = [...options];
+            arr.map(elem => {
+                var obj = { value: elem, label: elem };
+                option.push(obj);
+            })
+            setOptions(option);
         }).catch((error) => {
             console.log(error)
         })
 
     }, []);
 
-    const generateRow = (id) => ({
-        name: services.name,
-        namespace: services.namespace,
-        ipAddress: services.clusterIP,
-        // extAddress:services.labels["app.kubernetes.io/name"]
-        // extAddress: services."",
-        // status: randomArray([
-        //     'Active',
-        //     'Suspended',
-        //     'Waiting',
-        //     'Unknown'
-        // ])
-    });
+    const getServicesData = (param) => {
+        setServices(null);
+        let sericeListURL = "/api/v1/services/" + param
+        setLoading(true);
+        api.get(sericeListURL).then((response) => {
+            setServices(response.data.data)
+            setLoading(false);
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
 
     const sortCaret = (order) => {
         if (!order)
             return <i className="fa fa-fw fa-sort text-muted"></i>;
         if (order)
             return <i className={`fa fa-fw text-muted fa-sort-${order}`}></i>
+    }
+
+    const NoDataIndication = () => (
+        <div className='mt-6' style={{ textAlign: "center", height: "100px", marginTop: "100px" }}>
+            <div className='mb-3'>Fetching services...</div>
+            <div><PropagateLoader color={spinnerColor} size={15} /></div>
+        </div>
+    );
+
+    const updateSelectedNamespace = (event) => {
+        getServicesData(event.value);
     }
 
     const columns = [
@@ -64,21 +82,21 @@ export default function ServiceManager() {
             sortCaret,
             formatter: (cell) => {
                 const gettrimmed = (input) => {
-                    if (cell.length > 40) {
-                        return input.substring(0, 40) + '...';
-                     } else {
-                         return cell
-                     }
-                } 
-                 return (
-                     <>
-                     <span id={cell}>{gettrimmed(cell)}</span>
-                     <UncontrolledTooltip placement="top" target={cell}>
+                    if (cell.length > 30) {
+                        return input.substring(0, 30) + '...';
+                    } else {
+                        return cell
+                    }
+                }
+                return (
+                    <>
+                        <span id={cell}>{gettrimmed(cell)}</span>
+                        <UncontrolledTooltip placement="top" target={cell}>
                             {cell}
-                    </UncontrolledTooltip>
-                     </>
-                     
-                 )
+                        </UncontrolledTooltip>
+                    </>
+
+                )
             }
         },
         {
@@ -87,15 +105,20 @@ export default function ServiceManager() {
             sort: false,
             sortCaret,
             formatter: (cell) => {
-                const readyNum = (podInfo) => {
-                    let ready = podInfo.filter((elem) => elem.isReady == true);
-                    return ready;
+                if (cell != null) {
+                    const readyNum = (podInfo) => {
+                        let ready = podInfo?.filter((elem) => elem.isReady == true);
+                        return ready;
+                    }
+                    return (
+                        <>
+                            <i class="fa fa-fw fa-arrow-up green-color" aria-hidden="true"></i>{readyNum(cell).length}
+                            <i class="fa fa-fw fa-arrow-down red-color" aria-hidden="true"></i>{cell.length - readyNum(cell).length}
+                        </>
+                    );
                 }
-                return (
-                    <>
-                        <i class="fa fa-fw fa-arrow-up green-color" aria-hidden="true"></i>{readyNum(cell).length}
-                        <i class="fa fa-fw fa-arrow-down red-color" aria-hidden="true"></i>{cell.length - readyNum(cell).length}
-                    </>
+                else return (
+                    <><span className='text-warning'>unscheduled</span></>
                 );
             }
         },
@@ -141,11 +164,11 @@ export default function ServiceManager() {
         },
         {
             dataField: 'creationTimestamp',
-            text: 'Created',
+            text: 'Age',
             sort: false,
             formatter: (cell) => {
                 return (
-                    <span>{moment(cell).fromNow()}</span>
+                    <span>{moment(cell).fromNow(true)}</span>
                 )
             }
         },
@@ -156,27 +179,31 @@ export default function ServiceManager() {
             <Row>
                 <Col md={6}>
                     <dl className="row">
-                        <dt className="col-sm-6 text-right">Cluster IP</dt>
+                        <dt className="col-sm-6">Cluster IP</dt>
                         <dd className="col-sm-6">{row.clusterIP}</dd>
 
-                        <dt className="col-sm-6 text-right">IP Address</dt>
+                        <dt className="col-sm-6">IP Address</dt>
                         <dd className="col-sm-6">{row.ipAddress}</dd>
 
-                        <dt className="col-sm-6 text-right">Browser</dt>
+                        <dt className="col-sm-6">Browser</dt>
                         <dd className="col-sm-6">{row.browser}</dd>
                     </dl>
                 </Col>
                 <Col md={6}>
-                    <dl className="row">
-                        <dt className="col-sm-6 text-right">Operating System</dt>
-                        <dd className="col-sm-6">{row.os}</dd>
-
-                        <dt className="col-sm-6 text-right">Selected Plan</dt>
-                        <dd className="col-sm-6">{row.planSelected}</dd>
-
-                        <dt className="col-sm-6 text-right">Plan Expiriation</dt>
-                        <dd className="col-sm-6">{moment(row.planEnd).format('DD-MMM-YYYY')}</dd>
-                    </dl>
+                    <div className="row">
+                        <div style={{fontWeight: "bolder"}}>Labels</div>
+                        <div style={{display: "flex", flexWrap: "wrap"}}>
+                            {Object.entries(row.labels).map(([key, value]) => (
+                                <div className='badge badge-primary mr-2 mb-2'>{key}:{value.toString()}</div>
+                            ))}
+                        </div>
+                        <div style={{fontWeight: "bolder"}}>Annotations</div>
+                        <div style={{display: "flex", flexWrap: "wrap"}}>
+                            {Object.entries(row.annotations).map(([key, value]) => (
+                                <div className='badge badge-info mr-2 mb-2'>{key}:{value.toString()}</div>
+                            ))}
+                        </div>
+                    </div>
                 </Col>
             </Row>
         ),
@@ -195,6 +222,7 @@ export default function ServiceManager() {
     }
 
     return (
+
         <ToolkitProvider
             keyField="name"
             data={services}
@@ -205,39 +233,48 @@ export default function ServiceManager() {
             {
                 props => (
                     <React.Fragment>
-                        <div className="d-flex justify-content-end align-items-center mb-2">
-                            <h6 className="my-0">
-                                Applications
-                            </h6>
-                            <div className="d-flex ml-auto">
+
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <div style={{ width: "300px" }}>
                                 <CustomSearch
-                                    className="mr-2"
-                                    { ...props.searchProps }
+                                    className="mr-2" style={{ width: "auto !important" }}
+                                    {...props.searchProps}
                                 />
+                            </div>
+                            <div className="d-flex ml-auto" >
                                 <ButtonGroup>
+                                    <div className='mr-2' style={{ width: "200px" }}>
+                                        <Select
+                                            defaultValue={{ value: "am-dev", label: "am-dev" }}
+                                            options={options}
+                                            onChange={updateSelectedNamespace}
+                                            isSearchable="true" />
+                                    </div>
                                     <Button
                                         size="sm"
                                         color='primary'
-                                        // onClick={handleAddRow}
+                                    // onClick={handleAddRow}
                                     >
                                         <i className="fa fa-fw fa-plus"></i> Create Service
                                     </Button>
                                 </ButtonGroup>
                             </div>
                         </div>
-                        <BootstrapTable
-                            classes="table-responsive-lg"
-                            bordered={ false }
-                            expandRow={ expandRow }
-                            responsive
-                            hover
-                            { ...props.baseProps }
-                        />
+                        {services != null ? (
+                            <BootstrapTable
+                                classes="table-responsive-lg"
+                                bordered={false}
+                                expandRow={expandRow}
+                                // noDataIndication={() => <NoDataIndication />}
+                                responsive
+                                hover
+                                {...props.baseProps}
+                            />
+                        ) : loading ? <NoDataIndication />
+                            : (<div style={{ textAlign: "center" }}> No Data Found</div>)}
                     </React.Fragment>
                 )
             }
         </ToolkitProvider>
-
-
-    );
+    )
 }

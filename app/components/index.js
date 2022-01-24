@@ -26,7 +26,6 @@ import Progress from './Progress';
 import Sidebar from './Sidebar';
 import SidebarMenu from './SidebarMenu';
 import SidebarTrigger from './SidebarTrigger';
-import StarRating from './StarRating';
 import {
     ThemeClass,
     ThemeProvider,
@@ -142,7 +141,6 @@ export {
     Sidebar,
     SidebarMenu,
     SidebarTrigger,
-    StarRating,
     ThemeClass,
     ThemeConsumer,
     ThemeProvider,

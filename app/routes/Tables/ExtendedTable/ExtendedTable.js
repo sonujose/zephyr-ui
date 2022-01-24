@@ -2,7 +2,6 @@ import React from 'react';
 import { Container, Row, Col } from './../../../components';
 
 import ServiceManager from './components/ServiceManager';
-import {AdvancedTableB} from './components/AdvancedTableB';
 import { HeaderMain } from "../../components/HeaderMain";
 
 export const ExtendedTable = () => (

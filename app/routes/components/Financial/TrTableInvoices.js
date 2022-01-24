@@ -7,8 +7,6 @@ import {
     AvatarAddOn
 } from './../../../components';
 
-import { randomAvatar } from './../../../utilities';
-
 const TrTableInvoices = () => (
     <React.Fragment>
         {
@@ -26,24 +24,7 @@ const TrTableInvoices = () => (
                     </td>
                     <td className="align-middle">
                         <Media>
-                            <Media left className="align-self-center mr-4">
-                                <Avatar.Image
-                                    size="md"
-                                    src={ randomAvatar() }
-                                    addOns={[
-                                        <AvatarAddOn.Icon 
-                                            className="fa fa-circle"
-                                            color="white"
-                                            key="avatar-icon-bg"
-                                        />,
-                                        <AvatarAddOn.Icon 
-                                            className="fa fa-circle"
-                                            color="danger"
-                                            key="avatar-icon-fg"
-                                        />
-                                    ]}
-                                /> 
-                            </Media>
+                          
                             <Media body>
                                 <span className="d-flex mb-1">
                                     <span className="mt-0 d-flex h6 mb-0">

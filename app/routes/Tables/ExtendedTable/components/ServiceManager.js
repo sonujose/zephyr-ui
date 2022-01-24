@@ -33,11 +33,11 @@ export default function ServiceManager() {
         api.get("/api/v1/namespaces").then((response) => {
             let arr = response.data.data;
             let option = [...options];
+            option.push({ value: "all-ns", label: "All Namespaces"})
             arr.map(elem => {
                 var obj = { value: elem, label: elem };
                 option.push(obj);
             })
-            option.push({ value: "all-ns", label: "All Namespaces"})
             setOptions(option);
         }).catch((error) => {
             console.log(error)
@@ -130,7 +130,10 @@ export default function ServiceManager() {
             text: 'App',
             sort: true,
             formatter: (cell) => {
-                return cell["app.kubernetes.io/name"];
+                if (cell != null) {
+                    return cell["app.kubernetes.io/name"] || cell["kubernetes.io/name"] || cell["app"];
+                }
+                else return ""
             }
         }, {
             dataField: 'namespace',
@@ -193,7 +196,7 @@ export default function ServiceManager() {
                     </dl>
                 </Col>
                 <Col md={6}>
-                    <div className="row">
+                    <div className="row" style={{flexDirection: "column"}}>
                         <div style={{fontWeight: "bolder"}}>Labels</div>
                         <div style={{display: "flex", flexWrap: "wrap"}}>
                             {Object.entries(row.labels).map(([key, value]) => (
@@ -202,9 +205,11 @@ export default function ServiceManager() {
                         </div>
                         <div style={{fontWeight: "bolder"}}>Annotations</div>
                         <div style={{display: "flex", flexWrap: "wrap"}}>
-                            {Object.entries(row.annotations).map(([key, value]) => (
-                                <div className='badge badge-info mr-2 mb-2'>{key}:{value.toString()}</div>
-                            ))}
+                            {Object.entries(row.annotations).map(([key, value]) => 
+                                (key !== "kubectl.kubernetes.io/last-applied-configuration")
+                                    ?<div className='badge badge-info mr-2 mb-2'>{key}:{value.toString()}</div>
+                                    :""
+                            )}
                         </div>
                     </div>
                 </Col>

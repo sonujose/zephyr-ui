@@ -5,7 +5,7 @@ import ServiceManager from './components/ServiceManager';
 import { HeaderMain } from "../../components/HeaderMain";
 
 export const ExtendedTable = () => (
-    <Container>
+    <Container fluid="true">
         <HeaderMain 
             title="Services"
             className="mb-4 mt-1"

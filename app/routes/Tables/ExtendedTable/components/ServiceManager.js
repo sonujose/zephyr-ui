@@ -18,16 +18,23 @@ import {
 import { CustomSearch } from './CustomSearch';
 
 export default function ServiceManager() {
+    
+    let userNamespacePreference = localStorage.getItem('service_namespace_preference')
+    if (userNamespacePreference == null) {
+        userNamespacePreference = "default"
+    }
+    
     const [services, setServices] = useState([])
     const [spinnerColor, setSpinnerColor] = useState("#1eb7ff")
     const [namespaces, setNamespaces] = useState([])
     const [loading, setLoading] = useState(false);
     const [options, setOptions] = useState([]);
+    const [preferedNamespace, setPreferedNamespace] = useState(userNamespacePreference)
 
     useEffect(() => {
-
+    
         // List all services in the namespace
-        getServicesData("am-dev");
+        getServicesData(preferedNamespace);
 
         // Get List of all namespaces
         api.get("/api/v1/namespaces").then((response) => {
@@ -74,6 +81,7 @@ export default function ServiceManager() {
     );
 
     const updateSelectedNamespace = (event) => {
+        localStorage.setItem('service_namespace_preference', event.value);
         getServicesData(event.value);
     }
 
@@ -131,7 +139,7 @@ export default function ServiceManager() {
             sort: true,
             formatter: (cell) => {
                 if (cell != null) {
-                    return cell["app.kubernetes.io/name"] || cell["kubernetes.io/name"] || cell["app"];
+                    return cell["app.kubernetes.io/name"] || cell["kubernetes.io/name"] || cell["app"] || cell["k8s-app"];
                 }
                 else return ""
             }
@@ -197,20 +205,23 @@ export default function ServiceManager() {
                 </Col>
                 <Col md={6}>
                     <div className="row" style={{flexDirection: "column"}}>
+                                {/* Service Labels*/}
                         <div style={{fontWeight: "bolder"}}>Labels</div>
-                        <div style={{display: "flex", flexWrap: "wrap"}}>
-                            {Object.entries(row.labels).map(([key, value]) => (
+                        {row.labels !== null ? <div style={{display: "flex", flexWrap: "wrap"}}>
+                            {Object.entries(row.labels)?.map(([key, value]) => (
                                 <div className='badge badge-primary mr-2 mb-2'>{key}:{value.toString()}</div>
                             ))}
-                        </div>
+                        </div> : ""}
+                                {/* Service Annotations*/}
                         <div style={{fontWeight: "bolder"}}>Annotations</div>
-                        <div style={{display: "flex", flexWrap: "wrap"}}>
-                            {Object.entries(row.annotations).map(([key, value]) => 
+                        {row.annotations !== null ? <div style={{display: "flex", flexWrap: "wrap"}}>
+                            {Object.entries(row.annotations)?.map(([key, value]) => 
                                 (key !== "kubectl.kubernetes.io/last-applied-configuration")
                                     ?<div className='badge badge-info mr-2 mb-2'>{key}:{value.toString()}</div>
                                     :""
                             )}
-                        </div>
+                        </div> : ""}
+                        
                     </div>
                 </Col>
             </Row>
@@ -253,7 +264,7 @@ export default function ServiceManager() {
                                 <ButtonGroup>
                                     <div className='mr-2' style={{ width: "200px" }}>
                                         <Select
-                                            defaultValue={{ value: "am-dev", label: "am-dev" }}
+                                            defaultValue={{ value: preferedNamespace, label: preferedNamespace }}
                                             options={options}
                                             onChange={updateSelectedNamespace}
                                             isSearchable="true" />

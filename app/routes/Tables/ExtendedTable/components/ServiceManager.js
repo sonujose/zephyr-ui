@@ -37,6 +37,7 @@ export default function ServiceManager() {
                 var obj = { value: elem, label: elem };
                 option.push(obj);
             })
+            option.push({ value: "all-ns", label: "All Namespaces"})
             setOptions(option);
         }).catch((error) => {
             console.log(error)
@@ -53,6 +54,8 @@ export default function ServiceManager() {
             setLoading(false);
         }).catch((error) => {
             console.log(error)
+            setServices(null)
+            setLoading(false)
         })
     }
 
@@ -271,7 +274,7 @@ export default function ServiceManager() {
                                 {...props.baseProps}
                             />
                         ) : loading ? <NoDataIndication />
-                            : (<div style={{ textAlign: "center" }}> No Data Found</div>)}
+                            : (<div style={{ textAlign: "center" }}> No Data Found </div>)}
                     </React.Fragment>
                 )
             }

@@ -22,7 +22,6 @@ import Navbar from './Navbar';
 import NavbarThemeProvider from './NavbarThemeProvider';
 import NestedDropdown from './NestedDropdown';
 import OuterClick from './OuterClick';
-import PageLoader from './PageLoader';
 import Progress from './Progress';
 import Sidebar from './Sidebar';
 import SidebarMenu from './SidebarMenu';
@@ -137,7 +136,6 @@ export {
     withPageConfig,
     setupPage,
     OuterClick,
-    PageLoader,
     PageConfigConsumer,
     PageConfigProvider,
     Progress,

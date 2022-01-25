@@ -13,7 +13,7 @@ import {
 import {
     TinyBarChart
 } from "./TinyBarChart"
-
+import { randomArray } from './../../../../utilities';
 const percents = [
     "15",
     "25",

@@ -7,6 +7,11 @@ import { api } from './../../../../api/fetcher'
 import { UncontrolledTooltip } from './../../../../components'
 import PropagateLoader from "react-spinners/PropagateLoader";
 import Select from 'react-select'
+import {
+    PieChart,
+    Pie,
+    Cell
+} from 'recharts';
 
 import {
     Badge,
@@ -18,12 +23,12 @@ import {
 import { CustomSearch } from './CustomSearch';
 
 export default function ServiceManager() {
-    
+
     let userNamespacePreference = localStorage.getItem('service_namespace_preference')
     if (userNamespacePreference == null) {
         userNamespacePreference = "default"
     }
-    
+
     const [services, setServices] = useState([])
     const [spinnerColor, setSpinnerColor] = useState("#1eb7ff")
     const [namespaces, setNamespaces] = useState([])
@@ -31,8 +36,32 @@ export default function ServiceManager() {
     const [options, setOptions] = useState([]);
     const [preferedNamespace, setPreferedNamespace] = useState(userNamespacePreference)
 
+    const getPodStatus = (podInfo) => {
+        if (podInfo == null) {
+            return "0"
+        }
+        let requestedPods = podInfo.length
+        let runningPods = podInfo.filter((p) => p.isReady).length
+        return runningPods.toString() + "/" + requestedPods.toString()
+    }
+
+    const getPodStatusPiChartData = (podInfo) => {
+
+        if (podInfo == null) {
+            return null
+        }
+
+        let requestedPods = podInfo.length
+        let runningPods = podInfo.filter((p) => p.isReady).length
+
+        return [
+            { name: 'Running', value: (runningPods / requestedPods) * 100 },
+            { name: 'Failed', value: (1 - (runningPods / requestedPods)) * 100 }
+        ]
+    };
+
     useEffect(() => {
-    
+
         // List all services in the namespace
         getServicesData(preferedNamespace);
 
@@ -40,7 +69,7 @@ export default function ServiceManager() {
         api.get("/api/v1/namespaces").then((response) => {
             let arr = response.data.data;
             let option = [...options];
-            option.push({ value: "all-ns", label: "All Namespaces"})
+            option.push({ value: "all-ns", label: "All Namespaces" })
             arr.map(elem => {
                 var obj = { value: elem, label: elem };
                 option.push(obj);
@@ -123,8 +152,8 @@ export default function ServiceManager() {
                     }
                     return (
                         <>
-                            <i class="fa fa-fw fa-arrow-up green-color" aria-hidden="true"></i>{readyNum(cell).length}
-                            <i class="fa fa-fw fa-arrow-down red-color" aria-hidden="true"></i>{cell.length - readyNum(cell).length}
+                            <i class="fa fa-fw fa-arrow-circle-up green-color" aria-hidden="true"></i>{readyNum(cell).length}
+                            <i class="fa fa-fw fa-arrow-circle-down red-color" aria-hidden="true"></i>{cell.length - readyNum(cell).length}
                         </>
                     );
                 }
@@ -192,36 +221,66 @@ export default function ServiceManager() {
         renderer: row => (
             <Row>
                 <Col md={6}>
-                    <dl className="row">
-                        <dt className="col-sm-6">Cluster IP</dt>
-                        <dd className="col-sm-6">{row.clusterIP}</dd>
+                    <div className="row ml-3" style={{flexDirection: "column"}}>
+                        <PieChart width={110} height={150} style={{marginLeft: "32px"}}>
+                            <text x={55} y={70} textAnchor="middle" dominantBaseline="middle">{getPodStatus(row.podInfo)}</text>
+                            <text x={55} y={90} textAnchor="middle" dominantBaseline="middle">Instances</text>
+                            <Pie
+                                data={getPodStatusPiChartData(row.podInfo)}
+                                dataKey="value"
+                                stroke="#foo"
+                                innerRadius={48}
+                                outerRadius={55}
+                                fill="#ccc"
+                            >
+                                <Cell fill="#1EB7FF" />
+                            </Pie>
+                        </PieChart>
+                        <div>
+                            <div className="d-flex">
+                                <div className="text-left mr-3">
+                                    <div className="small mb-2">
+                                        <i className="fa fa-circle fa-fw text-primary"></i> Running &nbsp;
+                                        <span className="mb-0">({row.podInfo.filter(p => p.isReady).length})</span>
+                                    </div>
+                                </div>
+                                <div className="text-left">
+                                    <div className="small mb-2">
+                                        <i className="fa fa-circle fa-fw text-gray-300"></i> Requested &nbsp;
+                                        <span className="mb-0">({row.podInfo.length})</span>
+                                    </div>   
+                                </div>
+                            </div>
+                        </div>
 
-                        <dt className="col-sm-6">IP Address</dt>
-                        <dd className="col-sm-6">{row.ipAddress}</dd>
-
-                        <dt className="col-sm-6">Browser</dt>
-                        <dd className="col-sm-6">{row.browser}</dd>
-                    </dl>
+                    </div>
                 </Col>
                 <Col md={6}>
-                    <div className="row" style={{flexDirection: "column"}}>
-                                {/* Service Labels*/}
-                        <div style={{fontWeight: "bolder"}}>Labels</div>
-                        {row.labels !== null ? <div style={{display: "flex", flexWrap: "wrap"}}>
+                    <div className="row" style={{ flexDirection: "column" }}>
+                        {/* Service Labels*/}
+                        <div style={{ fontWeight: "bolder" }}>Selectors</div>
+                        {row.selector !== null ? <div style={{ display: "flex", flexWrap: "wrap" }}>
+                            {Object.entries(row.selector)?.map(([key, value]) => (
+                                <div className='badge badge-secondary mr-2 mb-2'>{key}:{value.toString()}</div>
+                            ))}
+                        </div> : "No selectors found"}
+                        {/* Service Labels*/}
+                        <div style={{ fontWeight: "bolder" }}>Labels</div>
+                        {row.labels !== null ? <div style={{ display: "flex", flexWrap: "wrap" }}>
                             {Object.entries(row.labels)?.map(([key, value]) => (
                                 <div className='badge badge-primary mr-2 mb-2'>{key}:{value.toString()}</div>
                             ))}
-                        </div> : ""}
-                                {/* Service Annotations*/}
-                        <div style={{fontWeight: "bolder"}}>Annotations</div>
-                        {row.annotations !== null ? <div style={{display: "flex", flexWrap: "wrap"}}>
-                            {Object.entries(row.annotations)?.map(([key, value]) => 
+                        </div> : "No lables found"}
+                        {/* Service Annotations*/}
+                        <div style={{ fontWeight: "bolder" }}>Annotations</div>
+                        {row.annotations !== null ? <div style={{ display: "flex", flexWrap: "wrap" }}>
+                            {Object.entries(row.annotations)?.map(([key, value]) =>
                                 (key !== "kubectl.kubernetes.io/last-applied-configuration")
-                                    ?<div className='badge badge-info mr-2 mb-2'>{key}:{value.toString()}</div>
-                                    :""
+                                    ? <div className='badge badge-info mr-2 mb-2'>{key}:{value.toString()}</div>
+                                    : <div className='badge badge-info mr-2 mb-2'>{key}</div>
                             )}
-                        </div> : ""}
-                        
+                        </div> : "No annotations found"}
+
                     </div>
                 </Col>
             </Row>
@@ -266,6 +325,7 @@ export default function ServiceManager() {
                                         <Select
                                             defaultValue={{ value: preferedNamespace, label: preferedNamespace }}
                                             options={options}
+                                            isDisabled={loading}
                                             onChange={updateSelectedNamespace}
                                             isSearchable="true" />
                                     </div>

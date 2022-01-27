@@ -3,8 +3,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import moment from 'moment';
 import _ from 'lodash';
-import { api } from './../../../../api/fetcher'
-import { UncontrolledTooltip } from './../../../../components'
+import { api } from './../../api/fetcher'
+import { UncontrolledTooltip } from './../../components'
 import PropagateLoader from "react-spinners/PropagateLoader";
 import Select from 'react-select'
 import {
@@ -19,8 +19,8 @@ import {
     ButtonGroup,
     Row,
     Col
-} from './../../../../components';
-import { CustomSearch } from './CustomSearch';
+} from './../../components';
+import { CustomSearch } from './components/CustomSearch';
 
 export default function ServiceManager() {
 
@@ -221,8 +221,9 @@ export default function ServiceManager() {
         renderer: row => (
             <Row>
                 <Col md={6}>
-                    <div className="row ml-3" style={{flexDirection: "column"}}>
-                        <PieChart width={110} height={150} style={{marginLeft: "32px"}}>
+                    <span className='ml-3' style={{fontWeight: "bold"}}>{row.name}</span>
+                    <div className="row ml-3" style={{ flexDirection: "column" }}>
+                        <PieChart width={110} height={150} style={{ marginLeft: "32px" }}>
                             <text x={55} y={70} textAnchor="middle" dominantBaseline="middle">{getPodStatus(row.podInfo)}</text>
                             <text x={55} y={90} textAnchor="middle" dominantBaseline="middle">Instances</text>
                             <Pie
@@ -248,11 +249,13 @@ export default function ServiceManager() {
                                     <div className="small mb-2">
                                         <i className="fa fa-circle fa-fw text-gray-300"></i> Requested &nbsp;
                                         <span className="mb-0">({row.podInfo.length})</span>
-                                    </div>   
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
+                    </div>
+                    <div>
+                        
                     </div>
                 </Col>
                 <Col md={6}>
@@ -284,6 +287,7 @@ export default function ServiceManager() {
                     </div>
                 </Col>
             </Row>
+
         ),
         showExpandColumn: true,
         expandHeaderColumnRenderer: ({ isAnyExpands }) => isAnyExpands ? (

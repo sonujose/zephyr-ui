@@ -1,3 +1,3 @@
-import { ExtendedTable } from './ExtendedTable';
+import { ExtendedTable } from './serviceManagerPage';
 
 export default ExtendedTable;

@@ -21,5 +21,10 @@ export const SidebarMiddleNav = () => (
             title="Services"
             to="/manage/services"
         />
+        <SidebarMenu.Item
+            icon={<i className="fa fa-fw fa-compass"></i>}
+            title="Gateway"
+            to="/manage/gateway"
+        />
     </SidebarMenu >
 );

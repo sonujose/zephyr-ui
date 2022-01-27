@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col } from './../../../components';
+import { Container, Row, Col } from '../../../components';
 
 import ServiceManager from './components/ServiceManager';
 import { HeaderMain } from "../../components/HeaderMain";

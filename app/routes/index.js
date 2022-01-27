@@ -18,6 +18,7 @@ import NavbarOnly from './Layouts/NavbarOnly';
 import SidebarWithNavbar from './Layouts/SidebarWithNavbar';
 
 import ExtendedTable from './Tables/ExtendedTable';
+import ServiceManager from './Services';
 
 import ComingSoon from './Pages/ComingSoon';
 import Confirmation from './Pages/Confirmation';
@@ -55,6 +56,7 @@ export const RoutedContent = () => {
             <Route path="/dashboards/reports" exact component={Reports} />
 
             <Route component={ ExtendedTable } path="/manage/services" />
+            <Route component={ ServiceManager } path="/manage/gateway" />
 
             <Route component={ ComingSoon } path="/pages/coming-soon" />
             <Route component={ Confirmation } path="/pages/confirmation" />

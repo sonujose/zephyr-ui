@@ -282,8 +282,26 @@ export default function ServiceManager() {
                                     </div>
                                 </div>
                             </div>
+                            <div className='d-flex'>
+                                {(row.podInfo != null)
+                                    ? <>{row.podInfo?.map((item, index) => (
+                                        <PieChart width={20} height={20}>
+                                            <Pie
+                                                data={getPodStatusPiChartData(row.podInfo)}
+                                                dataKey="value"
+                                                stroke="#foo"
+                                                innerRadius={1}
+                                                outerRadius={10}
+                                                fill="#ccc"
+                                            >
+                                                <Cell fill="#1BB934" />
+                                            </Pie>
+                                        </PieChart>
+                                    ))}</>
+                                    :<></> }
+                            </div>
                         </div>
-                        <div>
+                        <div style={{ width: "230px" }}>
                             <ResponsiveContainer width='100%' aspect={1 / 1}>
                                 <RadarChart cx="50%" cy="50%" outerRadius="80%" data={resourceUsageRadarData}>
                                     <PolarGrid />
@@ -294,7 +312,6 @@ export default function ServiceManager() {
                                     <Legend />
                                 </RadarChart>
                             </ResponsiveContainer>
-
                         </div>
                     </div>
                 </Col>

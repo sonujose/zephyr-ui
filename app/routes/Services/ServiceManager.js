@@ -10,7 +10,8 @@ import Select from 'react-select'
 import {
     PieChart,
     Pie,
-    Cell
+    Cell,
+    Radar, RadarChart, PolarGrid, Legend, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer
 } from 'recharts';
 
 import {
@@ -59,6 +60,33 @@ export default function ServiceManager() {
             { name: 'Failed', value: (1 - (runningPods / requestedPods)) * 100 }
         ]
     };
+
+    const resourceUsageRadarData = [
+        {
+            subject: 'Request',
+            A: 120,
+            B: 110,
+            fullMark: 150,
+        },
+        {
+            subject: 'Usage',
+            A: 98,
+            B: 130,
+            fullMark: 150,
+        },
+        {
+            subject: 'Limit',
+            A: 86,
+            B: 130,
+            fullMark: 150,
+        },
+        {
+            subject: 'Capacity',
+            A: 99,
+            B: 100,
+            fullMark: 150,
+        }
+    ];
 
     useEffect(() => {
 
@@ -221,43 +249,56 @@ export default function ServiceManager() {
         renderer: row => (
             <Row>
                 <Col md={6}>
-                    <span className='ml-3' style={{fontWeight: "bold"}}>{row.name}</span>
-                    <div className="row ml-3" style={{ flexDirection: "column" }}>
-                        <PieChart width={110} height={150} style={{ marginLeft: "32px" }}>
-                            <text x={55} y={70} textAnchor="middle" dominantBaseline="middle">{getPodStatus(row.podInfo)}</text>
-                            <text x={55} y={90} textAnchor="middle" dominantBaseline="middle">Instances</text>
-                            <Pie
-                                data={getPodStatusPiChartData(row.podInfo)}
-                                dataKey="value"
-                                stroke="#foo"
-                                innerRadius={48}
-                                outerRadius={55}
-                                fill="#ccc"
-                            >
-                                <Cell fill="#1EB7FF" />
-                            </Pie>
-                        </PieChart>
-                        <div>
-                            <div className="d-flex">
-                                <div className="text-left mr-3">
-                                    <div className="small mb-2">
-                                        <i className="fa fa-circle fa-fw text-primary"></i> Running &nbsp;
-                                        <span className="mb-0">({row.podInfo.filter(p => p.isReady).length})</span>
+                    <span className='ml-3' style={{ fontWeight: "bold" }}>{row.name}</span>
+                    <div className='d-flex justify-content-around mr-3'>
+                        <div className="row ml-3" style={{ flexDirection: "column" }}>
+                            <PieChart width={110} height={150} style={{ marginLeft: "32px" }}>
+                                <text x={55} y={70} textAnchor="middle" dominantBaseline="middle">{getPodStatus(row.podInfo)}</text>
+                                <text x={55} y={90} textAnchor="middle" dominantBaseline="middle">Instances</text>
+                                <Pie
+                                    data={getPodStatusPiChartData(row.podInfo)}
+                                    dataKey="value"
+                                    stroke="#foo"
+                                    innerRadius={48}
+                                    outerRadius={55}
+                                    fill="#ccc"
+                                >
+                                    <Cell fill="#1EB7FF" />
+                                </Pie>
+                            </PieChart>
+                            <div>
+                                <div className="d-flex">
+                                    <div className="text-left mr-3">
+                                        <div className="small mb-2">
+                                            <i className="fa fa-circle fa-fw text-primary"></i> Running &nbsp;
+                                            <span className="mb-0">({row.podInfo.filter(p => p.isReady).length})</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="text-left">
-                                    <div className="small mb-2">
-                                        <i className="fa fa-circle fa-fw text-gray-300"></i> Requested &nbsp;
-                                        <span className="mb-0">({row.podInfo.length})</span>
+                                    <div className="text-left">
+                                        <div className="small mb-2">
+                                            <i className="fa fa-circle fa-fw text-gray-300"></i> Requested &nbsp;
+                                            <span className="mb-0">({row.podInfo.length})</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        
+                        <div>
+                            <ResponsiveContainer width='100%' aspect={1 / 1}>
+                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={resourceUsageRadarData}>
+                                    <PolarGrid />
+                                    <PolarAngleAxis dataKey="subject" />
+                                    <PolarRadiusAxis angle={30} domain={[0, 150]} />
+                                    <Radar name="CPU" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
+                                    <Radar name="Memory" dataKey="B" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.6} />
+                                    <Legend />
+                                </RadarChart>
+                            </ResponsiveContainer>
+
+                        </div>
                     </div>
                 </Col>
+
                 <Col md={6}>
                     <div className="row" style={{ flexDirection: "column" }}>
                         {/* Service Labels*/}

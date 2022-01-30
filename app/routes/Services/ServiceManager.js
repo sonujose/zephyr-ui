@@ -7,6 +7,7 @@ import { api } from './../../api/fetcher'
 import { UncontrolledTooltip } from './../../components'
 import PropagateLoader from "react-spinners/PropagateLoader";
 import Select from 'react-select'
+import { Link } from 'react-router-dom';
 import {
     PieChart,
     Pie,
@@ -156,9 +157,12 @@ export default function ServiceManager() {
                         return cell
                     }
                 }
+                const getServiceInstancePageRoute = (input) => {
+                    return "/manage/services/" + preferedNamespace + "/" + input
+                }
                 return (
                     <>
-                        <span id={cell}>{gettrimmed(cell)}</span>
+                        <Link to={getServiceInstancePageRoute(cell)} id={cell}>{gettrimmed(cell)}</Link>
                         <UncontrolledTooltip placement="top" target={cell}>
                             {cell}
                         </UncontrolledTooltip>
@@ -301,9 +305,9 @@ export default function ServiceManager() {
                                     :<></> }
                             </div>
                         </div>
-                        <div style={{ width: "230px" }}>
-                            <ResponsiveContainer width='100%' aspect={1 / 1}>
-                                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={resourceUsageRadarData}>
+                        <div style={{ width: "300px" }}>
+                            <ResponsiveContainer width='100%' height='93%'>
+                                <RadarChart width={300} height={250} cx="50%" cy="50%" outerRadius="80%" data={resourceUsageRadarData}>
                                     <PolarGrid />
                                     <PolarAngleAxis dataKey="subject" />
                                     <PolarRadiusAxis angle={30} domain={[0, 150]} />

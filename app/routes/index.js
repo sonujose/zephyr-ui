@@ -55,6 +55,7 @@ export const RoutedContent = () => {
             <Route path="/dashboards/reports" exact component={Reports} />
 
             <Route component={ ServiceManager } path="/manage/services" />
+            <Route component={ ServiceManager } path="/manage/services/:namespace/:service" />
             <Route component={ ServiceManager } path="/manage/gateway" />
 
             <Route component={ ComingSoon } path="/pages/coming-soon" />

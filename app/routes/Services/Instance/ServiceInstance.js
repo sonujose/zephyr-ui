@@ -20,13 +20,14 @@ import {
 
 export default function ServiceInstance() {
 
-    const [services, setServices] = useState([])
+    const [services, setServices] = useState(null)
     const [spinnerColor, setSpinnerColor] = useState("#1eb7ff")
     const [loading, setLoading] = useState(false);
 
     let routerPaths = useLocation().pathname.split("/")
 
     useEffect(() => {
+        getServicesData(routerPaths[routerPaths.length - 2], routerPaths[routerPaths.length - 1]);
         let interval = setInterval(function () {
             getServicesData(routerPaths[routerPaths.length - 2], routerPaths[routerPaths.length - 1]);
         }, 5000);

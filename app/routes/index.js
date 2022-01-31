@@ -17,7 +17,8 @@ import Reports from './Dashboards/Reports';
 import NavbarOnly from './Layouts/NavbarOnly';
 import SidebarWithNavbar from './Layouts/SidebarWithNavbar';
 
-import ServiceManager from './Services';
+import ServiceManager from './Services/manager';
+import ServiceInstance from './Services/Instance';
 
 import ComingSoon from './Pages/ComingSoon';
 import Confirmation from './Pages/Confirmation';
@@ -54,8 +55,8 @@ export const RoutedContent = () => {
             <Route path="/dashboards/stock" exact component={Stock} />
             <Route path="/dashboards/reports" exact component={Reports} />
 
-            <Route component={ ServiceManager } path="/manage/services" />
-            <Route component={ ServiceManager } path="/manage/services/:namespace/:service" />
+            <Route component={ ServiceManager } exact path="/manage/services" />
+            <Route component={ ServiceInstance } path="/manage/services/:namespace/:service" />
             <Route component={ ServiceManager } path="/manage/gateway" />
 
             <Route component={ ComingSoon } path="/pages/coming-soon" />

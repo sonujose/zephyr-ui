@@ -3,8 +3,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import moment from 'moment';
 import _ from 'lodash';
-import { api } from './../../api/fetcher'
-import { UncontrolledTooltip } from './../../components'
+import { api } from './../../../api/fetcher'
+import { UncontrolledTooltip } from './../../../components'
 import PropagateLoader from "react-spinners/PropagateLoader";
 import Select from 'react-select'
 import { Link } from 'react-router-dom';
@@ -21,7 +21,7 @@ import {
     ButtonGroup,
     Row,
     Col
-} from './../../components';
+} from './../../../components';
 import { CustomSearch } from './components/CustomSearch';
 
 export default function ServiceManager() {
@@ -139,6 +139,7 @@ export default function ServiceManager() {
     );
 
     const updateSelectedNamespace = (event) => {
+        setPreferedNamespace(event.value)
         localStorage.setItem('service_namespace_preference', event.value);
         getServicesData(event.value);
     }
@@ -207,6 +208,12 @@ export default function ServiceManager() {
         }, {
             dataField: 'namespace',
             text: 'Namespace',
+            sort: true,
+            sortCaret
+        },
+        {
+            dataField: 'type',
+            text: 'Type',
             sort: true,
             sortCaret
         },

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import moment from 'moment';
 import _ from 'lodash';
 import { api } from './../../../api/fetcher'
 import {
-    UncontrolledTooltip,
     Breadcrumb,
-    BreadcrumbItem
+    BreadcrumbItem,
+    Nav,
+    NavItem,
+    NavLink,
 } from './../../../components'
 import PropagateLoader from "react-spinners/PropagateLoader";
-
+import { getServiceInstanceColumns } from './components/instanceColumns';
 import { CustomSearch } from './components/CustomSearch';
 
 import {
@@ -21,7 +22,6 @@ import {
 export default function ServiceInstance() {
 
     const [services, setServices] = useState(null)
-    const [spinnerColor, setSpinnerColor] = useState("#1eb7ff")
     const [loading, setLoading] = useState(false);
 
     let routerPaths = useLocation().pathname.split("/")
@@ -31,11 +31,11 @@ export default function ServiceInstance() {
         let interval = setInterval(function () {
             getServicesData(routerPaths[routerPaths.length - 2], routerPaths[routerPaths.length - 1]);
         }, 5000);
-        return() => {
+        return () => {
             clearInterval(interval);
         }
     }, []);
-    
+
     const getServicesData = (namespace, service) => {
         let sericeListURL = "/api/v1/services/" + namespace + "/" + service
         setLoading(true);
@@ -49,28 +49,6 @@ export default function ServiceInstance() {
         })
     }
 
-    //cell[0] - type:Initialized
-    //cell[1] - type:Ready
-    //cell[2] - type:ContainersReady
-    //cell[3] - type:PodScheduled
-    const getPodCondition = (item) => {
-        let uniqueId = Math.floor(Math.random() * 100) + 1
-        if (item[1].status == "True" && item[2].status == "True") {
-            return { status: "success", condition: "Running", id: uniqueId }
-        } else if (item[3].status == "False") {
-            return { status: "warning", condition: "scheduling" , id: uniqueId}
-        } else if (item[0].status == "True") {
-            return { status: "danger", condition: "Stopped" , id: uniqueId }
-        }
-    }
-
-    const sortCaret = (order) => {
-        if (!order)
-            return <i className="fa fa-fw fa-sort text-muted"></i>;
-        if (order)
-            return <i className={`fa fa-fw text-muted fa-sort-${order}`}></i>
-    }
-
     const NoDataIndication = () => (
         <div className='mt-6' style={{ textAlign: "center", height: "100px", marginTop: "100px" }}>
             <div className='mb-3'>Fetching service instances...</div>
@@ -78,134 +56,12 @@ export default function ServiceInstance() {
         </div>
     );
 
-    const columns = [
-        {
-            dataField: 'status.conditions',
-            text: '#',
-            sort: false,
-            formatter: (cell) => {
-                return (
-                    <>
-                        <i className={`fa fa -fw fa-circle text-${getPodCondition(cell).status}`}></i>
-                    </>
-                );
-            }
-        },
-        {
-            dataField: 'metadata.name',
-            text: 'Name',
-            sort: true,
-            sortCaret,
-            formatter: (cell) => {
-                const gettrimmed = (input) => {
-                    if (input.length > 30) {
-                        return input.substring(0, 30) + '...';
-                    } else {
-                        return input
-                    }
-                }
-                return (
-                    <>
-                        <span id={cell}>{gettrimmed(cell)}</span>
-                        <UncontrolledTooltip placement="top" target={cell}>
-                            {cell}
-                        </UncontrolledTooltip>
-                    </>
-
-                )
-            }
-        },
-        {
-            dataField: 'status.containerStatuses',
-            text: 'Status',
-            sort: false,
-            formatter: (cell) => {
-                return (
-                    <>
-                        {cell.map((item) => {
-                            return (
-                                <>
-                                    <div id={item.name}
-                                        style={{
-                                            width:"10px",
-                                            height:"10px", 
-                                            borderRadius:"2px", 
-                                            backgroundColor:item.ready ? "green" : "red", 
-                                            display:"inline-block",
-                                            margin:"0 2px"}}>
-                                    </div>
-                                    <UncontrolledTooltip 
-                                        placement="top" 
-                                        target={item.name}
-                                    >
-                                        {item.ready ? 
-                                            <div style={{textAlign:"left"}}>
-                                                <div>
-                                                    <b>{item.name}</b>
-                                                    <i>
-                                                        ({Object.keys(item.state)[0]}, {item.started ? "Ready":"Not Ready"})
-                                                    </i>
-                                                </div>
-                                                <div>Started At : {item.state[Object.keys(item.state)[0]].startedAt}</div>
-                                            </div> 
-                                        : ""}
-                                    </UncontrolledTooltip> 
-                                </>
-                        )})}
-                        
-                    </>
-                );
-            }
-        },
-        {
-            dataField: 'status.podIP',
-            text: 'Pod IP',
-            sort: false,
-            formatter: (cell) => {
-                return (
-                    <span>{cell}</span>
-                )
-            }
-        },
-
-        {
-            dataField: 'status.qosClass',
-            text: 'QosClass',
-            sort: false,
-            formatter: (cell) => {
-                return (
-                    <span>{cell}</span>
-                )
-            }
-        },
-        {
-            dataField: 'spec.nodeName',
-            text: 'Node',
-            sort: false,
-            formatter: (cell) => {
-                return (
-                    <span>{cell}</span>
-                )
-            }
-        },
-        {
-            dataField: 'metadata.creationTimestamp',
-            text: 'Age',
-            sort: false,
-            formatter: (cell) => {
-                return (
-                    <span>{moment(cell).fromNow(true)}</span>
-                )
-            }
-        },
-    ];
-
     return (
 
         <ToolkitProvider
             keyField="metadata.name"
             data={services}
-            columns={columns}
+            columns={getServiceInstanceColumns()}
             search
             exportCSV
         >
@@ -213,7 +69,7 @@ export default function ServiceInstance() {
                 props => (
                     <React.Fragment>
                         <div>
-                            <Breadcrumb>
+                            <Breadcrumb style={{paddingLeft: 0}}>
                                 <BreadcrumbItem>
                                     <Link to="/manage/services">services</Link>
                                 </BreadcrumbItem>
@@ -224,6 +80,29 @@ export default function ServiceInstance() {
                                     {routerPaths[routerPaths.length - 1]}
                                 </BreadcrumbItem>
                             </Breadcrumb>
+                        </div>
+
+                        <div className='col-md-6 mb-3' style={{paddingLeft: 0}}>
+                            <Nav pills className="nav-justified">
+                                <NavItem>
+                                    <NavLink href="#" active>
+                                        Instances
+                                        <i className="fa fa-fw fa-cubes ml-2"></i>
+                                    </NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink href="#">
+                                        Service map
+                                        <i className="fa fa-fw fa-bullseye ml-2"></i>
+                                    </NavLink>
+                                </NavItem>
+                                <NavItem>
+                                    <NavLink href="#">
+                                        Configuration
+                                        <i className="fa fa-fw fa-gears ml-2"></i>
+                                    </NavLink>
+                                </NavItem>
+                            </Nav>
                         </div>
 
                         <div className="d-flex justify-content-between align-items-center mb-2">

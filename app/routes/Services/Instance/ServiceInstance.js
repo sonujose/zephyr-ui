@@ -86,8 +86,8 @@ export default function ServiceInstance() {
                             <Nav pills className="nav-justified">
                                 <NavItem>
                                     <NavLink href="#" active>
+                                        <i className="fa fa-fw fa-cubes mr-2"></i>
                                         Instances
-                                        <i className="fa fa-fw fa-cubes ml-2"></i>
                                     </NavLink>
                                 </NavItem>
                                 <NavItem>

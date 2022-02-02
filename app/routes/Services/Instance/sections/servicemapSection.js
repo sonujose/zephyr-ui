@@ -8,7 +8,7 @@ import ReactFlow, {
     Background,
 } from 'react-flow-renderer';
 import PropagateLoader from "react-spinners/PropagateLoader";
-import {servicemapCollection} from './servicemapCollection';
+import {servicemapCollection, getServicemapCollection} from './servicemapCollection';
 import {
     useLocation
 } from "react-router-dom";
@@ -20,7 +20,7 @@ const onLoad = (reactFlowInstance) => {
 
 export function ServiceMapSection() {
 
-    const [elements, setElements] = useState(servicemapCollection);
+    const [elements, setElements] = useState([]);
     const [services, setServices] = useState(null)
     const [loading, setLoading] = useState(false);
 
@@ -51,10 +51,12 @@ export function ServiceMapSection() {
         setLoading(true);
         api.get(sericeListURL).then((response) => {
             setServices(response.data.message.info)
+            setElements(getServicemapCollection(response.data.message.info, service))
             setLoading(false);
         }).catch((error) => {
             console.log(error)
             setServices(null)
+            setElements(null)
             setLoading(false)
         })
     }

@@ -8,6 +8,7 @@ import { UncontrolledTooltip } from './../../../components'
 import PropagateLoader from "react-spinners/PropagateLoader";
 import Select from 'react-select'
 import { Link } from 'react-router-dom';
+
 import {
     PieChart,
     Pie,
@@ -163,7 +164,7 @@ export default function ServiceManager() {
                 }
                 return (
                     <>
-                        <Link to={getServiceInstancePageRoute(cell)} id={cell}>{gettrimmed(cell)}</Link>
+                        <Link to={getServiceInstancePageRoute(cell) + "/instance"} id={cell}>{gettrimmed(cell)}</Link>
                         <UncontrolledTooltip placement="top" target={cell}>
                             {cell}
                         </UncontrolledTooltip>
@@ -309,7 +310,7 @@ export default function ServiceManager() {
                                             </Pie>
                                         </PieChart>
                                     ))}</>
-                                    :<></> }
+                                    : <></>}
                             </div>
                         </div>
                         <div style={{ width: "300px" }}>

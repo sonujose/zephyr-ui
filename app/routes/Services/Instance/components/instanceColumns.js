@@ -5,7 +5,7 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
-    
+    Badge
 } from './../../../../components'
 import moment from 'moment';
 
@@ -22,31 +22,19 @@ const sortCaret = (order) => {
 const getPodCondition = (item) => {
     let uniqueId = Math.floor(Math.random() * 100) + 1
     if (item == null || item.length < 4) {
-        return { status: "danger", condition: "Stopped", id: uniqueId }
+        return { status: "danger", condition: "Unscheduled", id: uniqueId }
     } else {
         if (item[1].status == "True" && item[2].status == "True") {
             return { status: "success", condition: "Running", id: uniqueId }
         } else if (item[3].status == "False") {
             return { status: "warning", condition: "scheduling", id: uniqueId }
         } else if (item[0].status == "True") {
-            return { status: "danger", condition: "Stopped", id: uniqueId }
+            return { status: "danger", condition: "Crashloop", id: uniqueId }
         }
     }
 }
 
 const columns = [
-    {
-        dataField: 'status.conditions',
-        text: '#',
-        sort: false,
-        formatter: (cell) => {
-            return (
-                <>
-                    <i className={`fa fa -fw fa-circle text-${getPodCondition(cell).status}`}></i>
-                </>
-            );
-        }
-    },
     {
         dataField: 'metadata.name',
         text: 'Name',
@@ -174,6 +162,7 @@ const columns = [
             )
         }
     },
+    
     {
         dataField: 'metadata.creationTimestamp',
         text: 'Age',
@@ -182,6 +171,21 @@ const columns = [
             return (
                 <span>{moment(cell).fromNow(true)}</span>
             )
+        }
+    },
+    {
+        dataField: 'status.conditions',
+        text: 'State',
+        sort: false,
+        formatter: (cell) => {
+            return (
+                <>
+                <Badge color={getPodCondition(cell).status}>
+                        {getPodCondition(cell).condition}
+                    </Badge>
+                    {/* <text className={`text-${getPodCondition(cell).status}`}>{getPodCondition(cell).condition}</text> */}
+                </>
+            );
         }
     },
     {

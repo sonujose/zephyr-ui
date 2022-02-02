@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import BootstrapTable from 'react-bootstrap-table-next';
-import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import _ from 'lodash';
-import { api } from './../../../api/fetcher'
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -11,121 +8,80 @@ import {
     NavLink,
 } from './../../../components'
 import PropagateLoader from "react-spinners/PropagateLoader";
-import { getServiceInstanceColumns } from './components/instanceColumns';
-import { CustomSearch } from './components/CustomSearch';
+import { ServiceMapSection } from './sections/servicemapSection'
+import { ConfigurationSection } from './sections/configurationSection';
+import { InstancesSection } from './sections/instanceSection';
 
 import {
     useLocation,
-    Link
+    Link,
+    useRouteMatch,
+    Switch,
+    Route,
+    Redirect
 } from "react-router-dom";
 
 export default function ServiceInstance() {
+    const { path, url } = useRouteMatch()
+    let routerPaths = useLocation().pathname.split("/");
 
-    const [services, setServices] = useState(null)
-    const [loading, setLoading] = useState(false);
-
-    let routerPaths = useLocation().pathname.split("/")
-
-    useEffect(() => {
-        getServicesData(routerPaths[routerPaths.length - 2], routerPaths[routerPaths.length - 1]);
-        let interval = setInterval(function () {
-            getServicesData(routerPaths[routerPaths.length - 2], routerPaths[routerPaths.length - 1]);
-        }, 5000);
-        return () => {
-            clearInterval(interval);
-        }
-    }, []);
-
-    const getServicesData = (namespace, service) => {
-        let sericeListURL = "/api/v1/services/" + namespace + "/" + service
-        setLoading(true);
-        api.get(sericeListURL).then((response) => {
-            setServices(response.data.message.info)
-            setLoading(false);
-        }).catch((error) => {
-            console.log(error)
-            setServices(null)
-            setLoading(false)
-        })
+    const tab = (name) => {
+        let locations = useLocation().pathname.split("/");
+        return locations[locations.length - 1] == name;
     }
 
-    const NoDataIndication = () => (
-        <div className='mt-6' style={{ textAlign: "center", height: "100px", marginTop: "100px" }}>
-            <div className='mb-3'>Fetching service instances...</div>
-            <div><PropagateLoader color="#1eb7ff" size={15} /></div>
-        </div>
-    );
-
     return (
+        <React.Fragment>
+            <Breadcrumb style={{ paddingLeft: 0 }}>
+                <BreadcrumbItem>
+                    <Link to="/manage/services">services</Link>
+                </BreadcrumbItem>
+                <BreadcrumbItem>
+                    {routerPaths[routerPaths.length - 3]}
+                </BreadcrumbItem>
+                <BreadcrumbItem active>
+                    {routerPaths[routerPaths.length - 2]}
+                </BreadcrumbItem>
+            </Breadcrumb>
 
-        <ToolkitProvider
-            keyField="metadata.name"
-            data={services}
-            columns={getServiceInstanceColumns()}
-            search
-            exportCSV
-        >
-            {
-                props => (
-                    <React.Fragment>
-                        <div>
-                            <Breadcrumb style={{paddingLeft: 0}}>
-                                <BreadcrumbItem>
-                                    <Link to="/manage/services">services</Link>
-                                </BreadcrumbItem>
-                                <BreadcrumbItem>
-                                    {routerPaths[routerPaths.length - 2]}
-                                </BreadcrumbItem>
-                                <BreadcrumbItem active>
-                                    {routerPaths[routerPaths.length - 1]}
-                                </BreadcrumbItem>
-                            </Breadcrumb>
-                        </div>
-
-                        <div className='col-md-6 mb-3' style={{paddingLeft: 0}}>
-                            <Nav pills className="nav-justified">
-                                <NavItem>
-                                    <NavLink href="#" active>
-                                        Instances
-                                        <i className="fa fa-fw fa-cubes ml-2"></i>
-                                    </NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink href="#">
-                                        Service map
-                                        <i className="fa fa-fw fa-bullseye ml-2"></i>
-                                    </NavLink>
-                                </NavItem>
-                                <NavItem>
-                                    <NavLink href="#">
-                                        Configuration
-                                        <i className="fa fa-fw fa-gears ml-2"></i>
-                                    </NavLink>
-                                </NavItem>
-                            </Nav>
-                        </div>
-
-                        <div className="d-flex justify-content-between align-items-center mb-2">
-                            <div style={{ width: "300px" }}>
-                                <CustomSearch
-                                    className="mr-2" style={{ width: "auto !important" }}
-                                    {...props.searchProps}
-                                />
-                            </div>
-                        </div>
-                        {services != null ? (
-                            <BootstrapTable
-                                classes="table-responsive-lg"
-                                bordered={false}
-                                responsive
-                                hover
-                                {...props.baseProps}
-                            />
-                        ) : loading ? <NoDataIndication />
-                            : (<div style={{ textAlign: "center" }}> No Data Found </div>)}
-                    </React.Fragment>
-                )
-            }
-        </ToolkitProvider>
+            <div className='col-md-6 mb-3' style={{ paddingLeft: 0 }}>
+                <Nav pills className="nav-justified">
+                    <NavItem>
+                        <NavLink active={tab("instance")}>
+                            <Link to={`${url}/instance`}>
+                                Instances
+                                <i className="fa fa-fw fa-cubes ml-2"></i>
+                            </Link>
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink active={tab("servicemap")}>
+                            <Link to={`${url}/servicemap`}>
+                                Service map
+                                <i className="fa fa-fw fa-bullseye ml-2"></i>
+                            </Link>
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink active={tab("configuration")}>
+                            <Link to={`${url}/configuration`}>
+                                Configuration
+                                <i className="fa fa-fw fa-gears ml-2"></i>
+                            </Link>
+                        </NavLink>
+                    </NavItem>
+                </Nav>
+            </div>
+            <div className="tabs">
+                <Switch>
+                <Route exact path="/">
+                    <Redirect to="/instance" />
+                </Route>
+                    <Route path={`${url}/instance`} render={() => <InstancesSection />} />
+                    <Route path={`${url}/servicemap`} render={() => <ServiceMapSection />} />
+                    <Route path={`${url}/configuration`} render={() => <ConfigurationSection />} />
+                </Switch>
+            </div>
+        </React.Fragment>
     )
 }

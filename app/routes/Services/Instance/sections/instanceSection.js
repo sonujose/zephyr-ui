@@ -73,7 +73,7 @@ export function InstancesSection() {
                                 bordered={false}
                                 responsive
                                 hover
-                                selectRow={ { mode: 'checkbox', clickToSelect: true } }
+                                selectRow={ { mode: 'checkbox', clickToSelect: false } }
                                 {...props.baseProps}
                             />
                         ) : loading ? <NoDataIndication />

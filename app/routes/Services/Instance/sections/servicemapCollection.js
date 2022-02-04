@@ -52,7 +52,8 @@ export function getServicemapCollection(instances, service) {
         label: 'service selector',
     })
 
-    // Step 2 - Add Ingress nodes
+    // Step 2 - Add Ingress nodes to the tree
+    // TODO: Handle scenerio where a service has multiple ingress and multiple paths
     mapCollection.push({
         id: 'ingress1',
         type: 'input',
@@ -72,7 +73,7 @@ export function getServicemapCollection(instances, service) {
         },
     })
 
-    // Step 3 - Create ingress relation b/w service
+    // Step 3 - Create  relation b/w ingress nodes and upstream service
     mapCollection.push({
         id: 'ingress1-service',
         source: 'ingress1',
@@ -81,17 +82,21 @@ export function getServicemapCollection(instances, service) {
         label: '/api/asset/asset-service/v1',
     })
 
-    let xAxisBeginCorrection = instances.length/2*200
-    let podXAxis = 120 - xAxisBeginCorrection
+    
     // Step 4 - Add all pods and creating relationship with deployment
     // - Add pods nodes
-    // - Understand pod status
+    // - Understand pod status and update same in the node added
     // - Add deployment relation if pod status is ready
+
+    let xAxisBeginCorrection = instances.length/2*200
+    let podXAxis = 120 - xAxisBeginCorrection
     for (let index = 0; index < instances.length; index++) {
 
         // Assuming pod status to be true, if false will update new config
         let podready = true
         let podStatus = { condtion: "success", status: "ready", color: "#1BB934" }
+
+        if (instances[index].status.containerStatuses == null) continue
 
         instances[index].status.containerStatuses.forEach(element => {
             if (element.ready == false) { podready = false }
@@ -144,6 +149,7 @@ export function getServicemapCollection(instances, service) {
     return mapCollection
 }
 
+// Example route
 export const servicemapCollection = [
     {
         id: 'ingress1',

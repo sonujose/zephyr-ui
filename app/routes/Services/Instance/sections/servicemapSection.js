@@ -8,7 +8,7 @@ import ReactFlow, {
     Background,
 } from 'react-flow-renderer';
 import PropagateLoader from "react-spinners/PropagateLoader";
-import {servicemapCollection, getServicemapCollection} from './servicemapCollection';
+import { servicemapCollection, getServicemapCollection } from './servicemapCollection';
 import {
     useLocation
 } from "react-router-dom";
@@ -23,6 +23,7 @@ export function ServiceMapSection() {
     const [elements, setElements] = useState([]);
     const [services, setServices] = useState(null)
     const [loading, setLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState("loading...");
 
     const onElementsRemove = (elementsToRemove) =>
         setElements((els) => removeElements(elementsToRemove, els));
@@ -31,34 +32,48 @@ export function ServiceMapSection() {
 
     const NoDataIndication = () => (
         <div className='mt-6' style={{ textAlign: "center", height: "100px", marginTop: "100px" }}>
-            <div className='mb-3'>Generating servicemap visualization...</div>
+            <div className='mb-3'>{loadingText}</div>
             <div><PropagateLoader color="#1eb7ff" size={15} /></div>
         </div>
     );
 
     useEffect(() => {
-        getServicesData(routerPaths[routerPaths.length - 3], routerPaths[routerPaths.length - 2]);
+        getAllMappingData()
         let interval = setInterval(function () {
-            getServicesData(routerPaths[routerPaths.length - 3], routerPaths[routerPaths.length - 2]);
+            getAllMappingData()
         }, 5000);
         return () => {
             clearInterval(interval);
         }
     }, []);
 
+    const getAllMappingData = () => {
+        let service = routerPaths[routerPaths.length - 3]
+        let namespace = routerPaths[routerPaths.length - 2]
+        const promise1 = getServicesData(service, namespace);
+        const promise2 = getIngressMappingData(service, namespace);
+        Promise.all([promise1, promise2]).then(function (values) {
+            console.log("All promises returned.");
+            setLoading(false);
+            setServices(values[0].data.message.info)
+            setElements(getServicemapCollection(values[0].data.message.info, service, values[0].data.message.selectors))
+        }).catch((error) => {
+            console.log("Promise failed" + error.message);
+            setLoading(false);
+        });
+    }
     const getServicesData = (namespace, service) => {
         let sericeListURL = "/api/v1/services/" + namespace + "/" + service
         setLoading(true);
-        api.get(sericeListURL).then((response) => {
-            setServices(response.data.message.info)
-            setElements(getServicemapCollection(response.data.message.info, service))
-            setLoading(false);
-        }).catch((error) => {
-            console.log(error)
-            setServices(null)
-            setElements(null)
-            setLoading(false)
-        })
+        setLoadingText("Generating servicemap visualization...")
+        return api.get(sericeListURL)
+    }
+
+    const getIngressMappingData = (namespace, service) => {
+        let ingressMappingURL = "/api/v1/services/mappings/ingress/" + namespace + "/" + service
+        setLoading(true);
+        setLoadingText("Mapping Ingress details to servicemap...")
+        return api.get(ingressMappingURL)
     }
 
     return (

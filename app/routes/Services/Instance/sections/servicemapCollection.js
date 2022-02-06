@@ -4,7 +4,7 @@ import {
     UncontrolledTooltip
 } from '../../../../components';
 
-export function getServicemapCollection(instances, service) {
+export function getServicemapCollection(instances, service, selectors) {
     let mapCollection = []
 
     // Step 1 - Add Service and deployment nodes and create relation between both
@@ -49,7 +49,7 @@ export function getServicemapCollection(instances, service) {
         source: 'service',
         target: 'deployment',
         arrowHeadType: 'arrowclosed',
-        label: 'service selector',
+        label: "selectors",
     })
 
     // Step 2 - Add Ingress nodes to the tree
@@ -89,7 +89,7 @@ export function getServicemapCollection(instances, service) {
     // - Add deployment relation if pod status is ready
 
     let xAxisBeginCorrection = instances.length/2*200
-    let podXAxis = 120 - xAxisBeginCorrection
+    let podXAxis = 150 - xAxisBeginCorrection
     for (let index = 0; index < instances.length; index++) {
 
         // Assuming pod status to be true, if false will update new config

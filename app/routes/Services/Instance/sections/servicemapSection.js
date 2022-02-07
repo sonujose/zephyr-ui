@@ -48,17 +48,17 @@ export function ServiceMapSection() {
     }, []);
 
     const getAllMappingData = () => {
-        let service = routerPaths[routerPaths.length - 3]
-        let namespace = routerPaths[routerPaths.length - 2]
-        const promise1 = getServicesData(service, namespace);
-        const promise2 = getIngressMappingData(service, namespace);
+        let service = routerPaths[routerPaths.length - 2]
+        let namespace = routerPaths[routerPaths.length - 3]
+        const promise1 = getServicesData(namespace, service);
+        const promise2 = getIngressMappingData(namespace, service);
         Promise.all([promise1, promise2]).then(function (values) {
-            console.log("All promises returned.");
+            console.log("Successfully fetched all service mappings");
             setLoading(false);
             setServices(values[0].data.message.info)
-            setElements(getServicemapCollection(values[0].data.message.info, service, values[0].data.message.selectors))
+            setElements(getServicemapCollection(values[0].data.message.info, values[1].data.message, service, values[0].data.message.selectors))
         }).catch((error) => {
-            console.log("Promise failed" + error.message);
+            console.log("Error fetching servicemaps - " + error.message);
             setLoading(false);
         });
     }
@@ -72,7 +72,7 @@ export function ServiceMapSection() {
     const getIngressMappingData = (namespace, service) => {
         let ingressMappingURL = "/api/v1/services/mappings/ingress/" + namespace + "/" + service
         setLoading(true);
-        setLoadingText("Mapping Ingress details to servicemap...")
+        setLoadingText("Generating servicemap visualization...")
         return api.get(ingressMappingURL)
     }
 

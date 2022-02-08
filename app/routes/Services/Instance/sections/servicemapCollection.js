@@ -139,6 +139,7 @@ function AddIngressMappings(ingressList, service) {
 
     let xAxisBeginCorrection = ((ingressList.length - 1) / 2) * 200
     let ingressXAxis = 100 - xAxisBeginCorrection
+    let ingressYAxis = 0
     for (let index = 0; index < ingressList.length; index++) {
         let ingress = ingressList[index];
         let ingressId = "ingress" + index
@@ -157,7 +158,7 @@ function AddIngressMappings(ingressList, service) {
                     </>
                 ),
             },
-            position: { x: ingressXAxis, y: 0 },
+            position: { x: ingressXAxis, y: ingressYAxis },
             style: {
                 width: 175,
             },
@@ -170,6 +171,7 @@ function AddIngressMappings(ingressList, service) {
             labelStyle: { fill: '#f6ab6c', fontWeight: 700 },
         })
         ingressXAxis += 200
+        index %2 == 0 ? ingressYAxis += 50 : ingressYAxis -= 50
     }
     return ingressCollection
 }

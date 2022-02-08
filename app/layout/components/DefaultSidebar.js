@@ -26,7 +26,7 @@ export const DefaultSidebar = () => (
         <Sidebar.HideSlim>
             <Sidebar.Section>
                 <Link to="/" className="sidebar__brand">
-                    <LogoThemed checkBackground />
+                    {/* <LogoThemed checkBackground /> */}
                 </Link>
             </Sidebar.Section>
         </Sidebar.HideSlim>

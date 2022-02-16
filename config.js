@@ -18,7 +18,7 @@ var config = {
     srcHtmlLayout:          path.join(root, 'app', 'index.html'),
 
     // Site Config ====================================================
-    siteTitle:              'zephyr | Devops Native kubernetes deployment platform',
+    siteTitle:              'Devops Native kubernetes deployment platform',
     siteDescription:        'Devops native kubernetes deployment platform',
     siteCannonicalUrl:      'http://localhost:4100',
     siteKeywords:           'Kubernetes dashboard devops',

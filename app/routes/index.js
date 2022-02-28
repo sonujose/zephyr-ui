@@ -19,6 +19,7 @@ import SidebarWithNavbar from './Layouts/SidebarWithNavbar';
 
 import ServiceManager from './Services/manager';
 import ServiceInstance from './Services/Instance';
+import GatewayManager from './Gateway';
 
 import ComingSoon from './Pages/ComingSoon';
 import Confirmation from './Pages/Confirmation';
@@ -58,7 +59,7 @@ export const RoutedContent = () => {
             <Route component={ ServiceManager } exact path="/manage/services" />
             <Route component={ ServiceInstance } path="/manage/services/:namespace/:service" />
 
-            <Route component={ ServiceManager } path="/manage/gateway" />
+            <Route component={ GatewayManager } path="/manage/gateway" />
 
             <Route component={ ComingSoon } path="/pages/coming-soon" />
             <Route component={ Confirmation } path="/pages/confirmation" />

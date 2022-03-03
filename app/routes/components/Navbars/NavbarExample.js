@@ -55,8 +55,6 @@ const NavbarExample = ({ themeColor, themeStyle, navStyle }) => {
                 { /* END Navbar: Left Side */ }
                 { /* START Navbar: Right Side */ }
                 <Nav className="ml-auto" pills>
-                    <NavbarMessages />
-                    <NavbarActivityFeed />
                     { /* START Navbar: Dropdown */ }
                     <UncontrolledDropdown nav inNavbar>
                         <DropdownToggle nav>

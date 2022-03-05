@@ -41,7 +41,7 @@ export default function GatewayManager() {
         api.get("/api/v1/namespaces").then((response) => {
             let arr = response.data.message;
             let option = [...options];
-            option.push({ value: "all-ns", label: "All Namespaces" })
+            //option.push({ value: "all-ns", label: "All Namespaces" })
             arr.map(elem => {
                 var obj = { value: elem, label: elem };
                 option.push(obj);
@@ -104,7 +104,29 @@ export default function GatewayManager() {
                 }
                 else return ""
             }
-        }, {
+        },{
+            dataField: 'status.loadBalancer',
+            text: 'Status',
+            sort: true,
+            formatter: (cell) => {
+                return (
+                    <Badge color={'success'}>
+                        Live
+                    </Badge>
+                );
+            }
+        }, 
+        {
+            dataField: 'status.loadBalancer.ingress',
+            text: 'Internal IP',
+            sort: true,
+            sortCaret,
+            formatter: (cell) => {
+                return cell[0].ip
+            }
+        },
+
+        {
             dataField: 'metadata.namespace',
             text: 'Namespace',
             sort: true,
@@ -130,14 +152,14 @@ export default function GatewayManager() {
                     <div className="row" style={{ flexDirection: "column" }}>
                         {/* Ingress Labels*/}
                         <div style={{ fontWeight: "bolder" }}>Labels</div>
-                        {row.labels !== null ? <div style={{ display: "flex", flexWrap: "wrap" }}>
+                        {row.metadata.labels !== null ? <div style={{ display: "flex", flexWrap: "wrap" }}>
                             {Object.entries(row.metadata.labels)?.map(([key, value]) => (
                                 <div className='badge badge-primary mr-2 mb-2'>{key}:{value.toString()}</div>
                             ))}
                         </div> : "No lables found"}
                         {/* Ingress Annotations*/}
                         <div style={{ fontWeight: "bolder" }}>Annotations</div>
-                        {row.annotations !== null ? <div style={{ display: "flex", flexWrap: "wrap" }}>
+                        {row.metadata.annotations !== null ? <div style={{ display: "flex", flexWrap: "wrap" }}>
                             {Object.entries(row.metadata.annotations)?.map(([key, value]) =>
                                 (key !== "kubectl.kubernetes.io/last-applied-configuration")
                                     ? <div className='badge badge-info mr-2 mb-2'>{key}:{value.toString()}</div>

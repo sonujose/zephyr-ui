@@ -75,9 +75,6 @@ const System = () => (
             </Col>
             <Col lg={ 12 }>
                 <h6 className="mt-5">Processes</h6>
-                <p className="pb-3">
-                    { faker.lorem.paragraphs() }
-                </p>
                 <Table responsive>
                     <thead>
                         <tr>

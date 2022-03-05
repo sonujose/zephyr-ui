@@ -99,7 +99,7 @@ export default function ServiceManager() {
         api.get("/api/v1/namespaces").then((response) => {
             let arr = response.data.message;
             let option = [...options];
-            option.push({ value: "all-ns", label: "All Namespaces" })
+            //option.push({ value: "all-ns", label: "All Environments" })
             arr.map(elem => {
                 var obj = { value: elem, label: elem };
                 option.push(obj);

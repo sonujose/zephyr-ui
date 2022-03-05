@@ -57,7 +57,7 @@ const Monitor = () => (
                         <div className="mb-4">
                             <div>
                                 <h6 className="mb-1">CPU</h6>
-                                <p>Intel Celeron G1610 @2.60Ghz</p>
+                                
                             </div>
                             <div className="d-flex justify-content-between">
                                 <span className="d-flex align-items-center mr-2">Core 0</span>
@@ -109,7 +109,7 @@ const Monitor = () => (
                         <div>
                             <div>
                                 <h6 className="mb-1">Interface Traffic <small>(re0)</small></h6>
-                                <p>Intel Celeron G1610 @2.60Ghz</p>
+                                
                             </div>
                         </div>
                     </CardBody>
@@ -122,7 +122,7 @@ const Monitor = () => (
                         <div>
                             <div>
                                 <h6 className="mb-1">Interface Traffic <small>(re0)</small></h6>
-                                <p>Intel Celeron G1610 @2.60Ghz</p>
+                                
                             </div>
                         </div>
                         <TinyAreaChart />
@@ -188,10 +188,6 @@ const Monitor = () => (
                 </Card>
             </Col>
             <Col lg={ 8 }>
-                <p>
-                    Nesciunt odit eius nihil molestiae tenetur earum enim quidem. Aperiam non sapiente voluptatum in doloremque rerum magnam quae sed. 
-                    Quisquam eos non voluptate sapiente qui temporibus harum in illo. Aliquid at dolor labore. Qui error modi.
-                </p>
                 <div className="hr-text hr-text-left mt-4 mb-4">
                     <span>Volume Status</span>
                 </div>

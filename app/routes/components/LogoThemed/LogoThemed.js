@@ -34,15 +34,9 @@ const LogoThemed = ({ checkBackground, className, ...otherProps }) => (
     <ThemeConsumer>
     {
         ({ style, color }) => (
-            <img
+            <div
                 style={{"marginLeft": "30px"}}
-                src={
-                    checkBackground ?
-                        getLogoUrlBackground(style, color) :
-                        getLogoUrl(style, color)
-                }
                 className={ classNames('d-block', className) }
-                alt="zephyr"
                 { ...otherProps }
             />
         )

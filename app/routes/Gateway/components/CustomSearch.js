@@ -37,7 +37,7 @@ export class CustomSearch extends React.Component {
                     onChange={(e) => { this.setState({ value: e.target.value }) }}
                     value={ this.state.value }
                     className="bg-white"
-                    placeholder="Search for gateway routes..."
+                    placeholder="Find gateway routes..."
                 />
                 {
                     this.state.value && (

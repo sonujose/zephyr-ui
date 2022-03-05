@@ -58,7 +58,6 @@ const Error404 = () => (
             </div>
             { /* END Bottom Links */}
             { /* START Footer */}
-            <FooterAuth />
             { /* END Footer */}
         </EmptyLayout.Section>
     </EmptyLayout>

@@ -11,7 +11,7 @@ import PropagateLoader from "react-spinners/PropagateLoader";
 import { ServiceMapSection } from './sections/servicemapSection'
 import { ConfigurationSection } from './sections/configurationSection';
 import { InstancesSection } from './sections/instanceSection';
-
+import { MetadataSection } from './sections/metadataSection';
 import {
     useLocation,
     Link,
@@ -70,6 +70,14 @@ export default function ServiceInstance() {
                             </Link>
                         </NavLink>
                     </NavItem>
+                    <NavItem>
+                        <NavLink active={tab("metadata")}>
+                            <Link to={`${url}/metadata`}>
+                                Metadata
+                                <i className="fa fa-fw fa-tags ml-2"></i>
+                            </Link>
+                        </NavLink>
+                    </NavItem>
                 </Nav>
             </div>
             <div className="tabs">
@@ -80,6 +88,7 @@ export default function ServiceInstance() {
                     <Route path={`${url}/instance`} render={() => <InstancesSection />} />
                     <Route path={`${url}/servicemap`} render={() => <ServiceMapSection />} />
                     <Route path={`${url}/configuration`} render={() => <ConfigurationSection />} />
+                    <Route path={`${url}/metadata`} render={() => <MetadataSection />} />
                 </Switch>
             </div>
         </React.Fragment>

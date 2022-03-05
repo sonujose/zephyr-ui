@@ -3,16 +3,7 @@ import PropTypes from 'prop-types';
 
 const FooterText = (props) => (
 	<React.Fragment>
-		(C) { props.year } All Rights Reserved. This is the &quot;{ props.name }&quot; built with { props.desc }. 
-		Designed and implemented by{' '}
-		<a
-			href="http://www.webkom.co"
-			target="_blank"
-			rel="noopener noreferrer"
-			className="sidebar__link"
-		>
-			www.webkom.co
-		</a>
+		(C) { props.year } All Rights Reserved. 
 	</React.Fragment>
 )
 FooterText.propTypes = {
@@ -22,8 +13,8 @@ FooterText.propTypes = {
 };
 FooterText.defaultProps = {
     year: "2018",
-    name: "Admin Theme",
-    desc: "Bootstrap 4, React 16 (latest) & NPM"
+    name: "Dashboard",
+    desc: "Dashboard"
 };
 
 export { FooterText };

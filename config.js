@@ -18,14 +18,14 @@ var config = {
     srcHtmlLayout:          path.join(root, 'app', 'index.html'),
 
     // Site Config ====================================================
-    siteTitle:              'Devops Native kubernetes deployment platform',
+    siteTitle:              'Sira | Devops Native kubernetes deployment platform',
     siteDescription:        'Devops native kubernetes deployment platform',
-    siteCannonicalUrl:      'http://localhost:4100',
+    siteCannonicalUrl:      'http://sira.centralindia.cloudapp.azure.com',
     siteKeywords:           'Kubernetes dashboard devops',
     scssIncludes:           [],
 
     // api endpoint
-    apiBaseURL: 'http://localhost:7500',
+    apiBaseURL: 'http://sira-core.centralindia.cloudapp.azure.com',
 
     // Individual api endpoints
     apiEndpoints: {

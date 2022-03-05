@@ -20,7 +20,13 @@ import SidebarWithNavbar from './Layouts/SidebarWithNavbar';
 import ServiceManager from './Services/manager';
 import ServiceInstance from './Services/Instance';
 import GatewayManager from './Gateway';
-
+import EnvironmentManager from './Environment';
+import MarketplaceManager from './marketplace';
+import AccessControlManager from './AccessControl';
+import CostAnalysisManager from './CostAnalysis';
+import AuditingManager from './Auditing';
+import SettingsManager from './Settings';
+import EventsManager from './Events';
 import ComingSoon from './Pages/ComingSoon';
 import Confirmation from './Pages/Confirmation';
 import Danger from './Pages/Danger';
@@ -46,7 +52,7 @@ import { SidebarASidebar } from './../layout/components/SidebarASidebar';
 export const RoutedContent = () => {
     return (
         <Switch>
-            <Redirect from="/" to="/dashboards/projects" exact />
+            <Redirect from="/" to="/manage/services" exact />
             
             <Route path="/dashboards/analytics" exact component={Analytics} />
             <Route path="/dashboards/projects" exact component={ProjectsDashboard} />
@@ -60,6 +66,13 @@ export const RoutedContent = () => {
             <Route component={ ServiceInstance } path="/manage/services/:namespace/:service" />
 
             <Route component={ GatewayManager } path="/manage/gateway" />
+            <Route component={ EnvironmentManager } path="/manage/environment" />
+            <Route component={ MarketplaceManager } path="/manage/marketplace" />
+            <Route component={ AccessControlManager } path="/manage/access-control" />
+            <Route component={ CostAnalysisManager } path="/manage/cost-analysis" />
+            <Route component={ AuditingManager } path="/manage/auditing" />
+            <Route component={ SettingsManager } path="/manage/settings" />
+            <Route component={ EventsManager } path="/manage/events" />
 
             <Route component={ ComingSoon } path="/pages/coming-soon" />
             <Route component={ Confirmation } path="/pages/confirmation" />
